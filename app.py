@@ -73,12 +73,7 @@ def analyze_image_with_gemini(gemini_key, prompt, img_bytes):
 
     raise last_err
 
-# ─── Risk Scoring Engine ──────────────────────────────────────────────────────
 def calculate_risk_score(disease_data, weather_data):
-    """
-    Gabungkan hasil analisis AI + data cuaca jadi risk score 0-100
-    Inovasi utama: prediksi risiko berbasis kondisi lingkungan saat ini
-    """
     score = 0
     factors = []
 
@@ -153,7 +148,6 @@ def calculate_risk_score(disease_data, weather_data):
 
 
 def generate_action_plan(disease_data, weather_data, risk_data):
-    """Generate jadwal tindakan 7 hari berbasis risk score"""
     today = datetime.now()
     plan = []
 
@@ -162,33 +156,32 @@ def generate_action_plan(disease_data, weather_data, risk_data):
 
     if is_healthy and risk_score < 40:
         plan = [
-            {"day": (today + timedelta(days=0)).strftime("%A, %d %b"), "hari": "Hari ini", "action": "Lakukan inspeksi visual rutin pada seluruh tanaman", "priority": "rendah", "icon": "👁️"},
-            {"day": (today + timedelta(days=2)).strftime("%A, %d %b"), "hari": "2 hari lagi", "action": "Pastikan drainase lahan baik jika hujan diprediksi", "priority": "rendah", "icon": "💧"},
-            {"day": (today + timedelta(days=5)).strftime("%A, %d %b"), "hari": "5 hari lagi", "action": "Pemberian pupuk sesuai jadwal rutin", "priority": "rendah", "icon": "🌱"},
-            {"day": (today + timedelta(days=7)).strftime("%A, %d %b"), "hari": "7 hari lagi", "action": "Upload foto baru untuk monitoring berkala", "priority": "rendah", "icon": "📸"},
+            {"day": (today + timedelta(days=0)).strftime("%A, %d %b"), "hari": "Hari ini", "action": "Lakukan inspeksi visual rutin pada seluruh tanaman", "priority": "rendah"},
+            {"day": (today + timedelta(days=2)).strftime("%A, %d %b"), "hari": "2 hari lagi", "action": "Pastikan drainase lahan baik jika hujan diprediksi", "priority": "rendah"},
+            {"day": (today + timedelta(days=5)).strftime("%A, %d %b"), "hari": "5 hari lagi", "action": "Pemberian pupuk sesuai jadwal rutin", "priority": "rendah"},
+            {"day": (today + timedelta(days=7)).strftime("%A, %d %b"), "hari": "7 hari lagi", "action": "Upload foto baru untuk monitoring berkala", "priority": "rendah"},
         ]
     elif risk_score < 70:
         plan = [
-            {"day": (today + timedelta(days=0)).strftime("%A, %d %b"), "hari": "Hari ini", "action": "Isolasi tanaman yang terinfeksi dari tanaman sehat", "priority": "sedang", "icon": "⚠️"},
-            {"day": (today + timedelta(days=1)).strftime("%A, %d %b"), "hari": "Besok", "action": "Aplikasikan fungisida/bakterisida sesuai jenis penyakit", "priority": "tinggi", "icon": "💊"},
-            {"day": (today + timedelta(days=2)).strftime("%A, %d %b"), "hari": "2 hari lagi", "action": "Kurangi kelembapan sekitar tanaman, perbaiki sirkulasi udara", "priority": "sedang", "icon": "🌬️"},
-            {"day": (today + timedelta(days=4)).strftime("%A, %d %b"), "hari": "4 hari lagi", "action": "Evaluasi efektivitas penanganan, cek perkembangan gejala", "priority": "sedang", "icon": "🔍"},
-            {"day": (today + timedelta(days=7)).strftime("%A, %d %b"), "hari": "7 hari lagi", "action": "Upload foto ulang untuk verifikasi pemulihan", "priority": "rendah", "icon": "📸"},
+            {"day": (today + timedelta(days=0)).strftime("%A, %d %b"), "hari": "Hari ini", "action": "Isolasi tanaman yang terinfeksi dari tanaman sehat", "priority": "sedang"},
+            {"day": (today + timedelta(days=1)).strftime("%A, %d %b"), "hari": "Besok", "action": "Aplikasikan fungisida/bakterisida sesuai jenis penyakit", "priority": "tinggi"},
+            {"day": (today + timedelta(days=2)).strftime("%A, %d %b"), "hari": "2 hari lagi", "action": "Kurangi kelembapan sekitar tanaman, perbaiki sirkulasi udara", "priority": "sedang"},
+            {"day": (today + timedelta(days=4)).strftime("%A, %d %b"), "hari": "4 hari lagi", "action": "Evaluasi efektivitas penanganan, cek perkembangan gejala", "priority": "sedang"},
+            {"day": (today + timedelta(days=7)).strftime("%A, %d %b"), "hari": "7 hari lagi", "action": "Upload foto ulang untuk verifikasi pemulihan", "priority": "rendah"},
         ]
     else:
         plan = [
-            {"day": (today + timedelta(days=0)).strftime("%A, %d %b"), "hari": "Hari ini — SEGERA", "action": "Karantina ketat: isolasi dan tandai semua tanaman bergejala", "priority": "tinggi", "icon": "🚨"},
-            {"day": (today + timedelta(days=0)).strftime("%A, %d %b"), "hari": "Hari ini", "action": "Buang dan musnahkan bagian daun/batang yang terinfeksi parah", "priority": "tinggi", "icon": "🗑️"},
-            {"day": (today + timedelta(days=1)).strftime("%A, %d %b"), "hari": "Besok pagi", "action": "Aplikasikan fungisida sistemik dosis penuh, ulangi 3 hari sekali", "priority": "tinggi", "icon": "💊"},
-            {"day": (today + timedelta(days=2)).strftime("%A, %d %b"), "hari": "2 hari lagi", "action": "Konsultasikan ke penyuluh pertanian atau ahli tanaman setempat", "priority": "tinggi", "icon": "👨‍🌾"},
-            {"day": (today + timedelta(days=4)).strftime("%A, %d %b"), "hari": "4 hari lagi", "action": "Evaluasi menyeluruh: jika menyebar, pertimbangkan eradikasi parsial", "priority": "tinggi", "icon": "📋"},
-            {"day": (today + timedelta(days=7)).strftime("%A, %d %b"), "hari": "7 hari lagi", "action": "Upload foto ulang untuk monitoring wajib", "priority": "sedang", "icon": "📸"},
+            {"day": (today + timedelta(days=0)).strftime("%A, %d %b"), "hari": "Hari ini — SEGERA", "action": "Karantina ketat: isolasi dan tandai semua tanaman bergejala", "priority": "tinggi"},
+            {"day": (today + timedelta(days=0)).strftime("%A, %d %b"), "hari": "Hari ini", "action": "Buang dan musnahkan bagian daun/batang yang terinfeksi parah", "priority": "tinggi"},
+            {"day": (today + timedelta(days=1)).strftime("%A, %d %b"), "hari": "Besok pagi", "action": "Aplikasikan fungisida sistemik dosis penuh, ulangi 3 hari sekali", "priority": "tinggi"},
+            {"day": (today + timedelta(days=2)).strftime("%A, %d %b"), "hari": "2 hari lagi", "action": "Konsultasikan ke penyuluh pertanian atau ahli tanaman setempat", "priority": "tinggi"},
+            {"day": (today + timedelta(days=4)).strftime("%A, %d %b"), "hari": "4 hari lagi", "action": "Evaluasi menyeluruh: jika menyebar, pertimbangkan eradikasi parsial", "priority": "tinggi"},
+            {"day": (today + timedelta(days=7)).strftime("%A, %d %b"), "hari": "7 hari lagi", "action": "Upload foto ulang untuk monitoring wajib", "priority": "sedang"},
         ]
 
     return plan
 
 
-# ─── Routes ───────────────────────────────────────────────────────────────────
 @app.route("/")
 def index():
     return render_template("index.html", api_keys_configured=api_keys_configured())
@@ -212,7 +205,6 @@ def analyze():
         if not image_b64:
             return jsonify({"error": "Gambar diperlukan"}), 400
 
-        # ── 1. Ambil data cuaca ──────────────────────────────────────────────
         if lat and lon:
             weather_url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={weather_key}&units=metric"
         else:
@@ -249,7 +241,6 @@ def analyze():
             "icon": weather_raw.get("weather", [{}])[0].get("icon", "01d"),
         }
 
-        # ── 2. Analisis gambar dengan Gemini ────────────────────────────────
         img_bytes = prepare_image(base64.b64decode(image_b64.split(",")[-1]))
 
         PROMPT = f"""
@@ -284,10 +275,7 @@ Balas HANYA dalam format JSON berikut (tanpa markdown, tanpa teks di luar JSON):
         raw = response.text.strip().replace("```json", "").replace("```", "").strip()
         disease_data = json.loads(raw)
 
-        # ── 3. Hitung risk score ────────────────────────────────────────────
         risk_data = calculate_risk_score(disease_data, weather_data)
-
-        # ── 4. Generate action plan ─────────────────────────────────────────
         action_plan = generate_action_plan(disease_data, weather_data, risk_data)
 
         return jsonify({

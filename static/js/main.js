@@ -4,7 +4,6 @@ let gpsCoords = null;
 const DONUT_CIRCUMFERENCE = 314;
 const SEVERITY_CLASS = { rendah: 'green', sedang: 'yellow', tinggi: 'red' };
 
-// ─── Init ─────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   updateClock();
   setInterval(updateClock, 1000);
@@ -40,7 +39,6 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-// ─── Upload ───────────────────────────────────────
 function handleFile(event) {
   const file = event.target.files[0];
   if (file) loadImage(file);
@@ -72,7 +70,6 @@ function setupDragDrop() {
   });
 }
 
-// ─── GPS ──────────────────────────────────────────
 function getGPS() {
   const status = document.getElementById('gpsStatus');
   const btn = document.getElementById('gpsBtn');
@@ -103,7 +100,6 @@ function getGPS() {
   );
 }
 
-// ─── Analyze ──────────────────────────────────────
 async function analyze() {
   const apiConfigured = window.CROPRISK_API_CONFIGURED === true;
   const geminiEl = document.getElementById('geminiKey');
@@ -147,7 +143,6 @@ async function analyze() {
   }
 }
 
-// ─── Render ───────────────────────────────────────
 function renderResult(data) {
   const { disease, weather, risk, action_plan, analyzed_at } = data;
 
@@ -311,7 +306,6 @@ function animateNumber(el, target) {
   }, 25);
 }
 
-// ─── UI helpers ───────────────────────────────────
 function setLoading(loading) {
   const btn = document.getElementById('analyzeBtn');
   document.getElementById('btnText').classList.toggle('hidden', loading);
