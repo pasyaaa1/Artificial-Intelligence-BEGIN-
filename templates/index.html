@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CropRisk — Peringatan Dini Penyakit Tanaman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <span class="brand-name">CropRisk</span>
+      <span class="brand-tag">Peringatan dini penyakit tanaman</span>
+    </div>
+    <span id="clock" class="nav-clock"></span>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Monitoring lahan</p>
+    <h1 class="hero-title">Deteksi risiko penyakit sebelum menyebar</h1>
+    <p class="hero-desc">
+      Upload foto daun dan tentukan lokasi lahan. Sistem menggabungkan analisis visual
+      dengan data cuaca untuk menghitung skor risiko dan rencana tindakan 7 hari.
+    </p>
+  </div>
+</section>
+
+<main class="main">
+  <div class="container">
+
+    {% if not api_keys_configured %}
+    <div class="card config-card">
+      <div class="card-header">
+        <h2 class="card-title">Konfigurasi API</h2>
+      </div>
+      <div class="config-grid">
+        <div class="field-group">
+          <label class="field-label" for="geminiKey">Gemini API Key</label>
+          <input type="password" id="geminiKey" class="field-input" placeholder="AIzaSy...">
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" class="field-hint">
+            Dapatkan di Google AI Studio
+          </a>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="weatherKey">OpenWeatherMap API Key</label>
+          <input type="password" id="weatherKey" class="field-input" placeholder="a1b2c3d4...">
+          <a href="https://openweathermap.org/api" target="_blank" class="field-hint">
+            Dapatkan di OpenWeatherMap
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Lokasi lahan</h2>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="cityInput">Kota / kabupaten</label>
+          <input type="text" id="cityInput" class="field-input" placeholder="contoh: Tegal, Brebes, Pekalongan">
+        </div>
+        <button type="button" class="btn-secondary" id="gpsBtn">Deteksi lokasi otomatis</button>
+        <p id="gpsStatus" class="gps-status"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Foto daun</h2>
+        </div>
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" id="fileInput" accept="image/*" hidden>
+          <div id="uploadPlaceholder">
+            <p class="upload-text">Klik atau seret foto ke sini</p>
+            <p class="upload-sub">JPG, PNG, WEBP</p>
+          </div>
+          <img id="previewImg" class="preview-img hidden" alt="Pratinjau foto daun">
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn-primary" id="analyzeBtn">
+      <span id="btnText">Analisis & hitung risiko</span>
+      <span id="btnLoader" class="hidden">
+        <span class="spinner"></span> Menganalisis...
+      </span>
+    </button>
+
+    <div id="errorBox" class="error-box hidden"></div>
+
+    <div id="resultSection" class="result-section hidden">
+      <div class="risk-hero" id="riskHero">
+        <div class="risk-hero-inner">
+          <p class="risk-label">Indeks risiko penyakit</p>
+          <div class="risk-score-wrap">
+            <svg class="risk-donut" viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="donut-bg" cx="60" cy="60" r="50"/>
+              <circle class="donut-fill" id="donutFill" cx="60" cy="60" r="50"
+                stroke-dasharray="314" stroke-dashoffset="314"/>
+            </svg>
+            <div class="risk-score-center">
+              <div class="risk-score-value">
+                <span class="risk-number" id="riskNumber">0</span>
+                <span class="risk-max">/100</span>
+              </div>
+            </div>
+          </div>
+          <div class="risk-level-badge" id="riskLevelBadge">—</div>
+          <p class="risk-analyzed" id="riskAnalyzed"></p>
+        </div>
+        <div class="risk-factors" id="riskFactors"></div>
+      </div>
+
+      <div class="info-grid">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Kondisi cuaca</h2>
+          </div>
+          <div class="weather-main">
+            <img id="weatherIcon" class="weather-icon" src="" alt="">
+            <div>
+              <div class="weather-temp" id="weatherTemp">—</div>
+              <div class="weather-desc" id="weatherDesc">—</div>
+              <div class="weather-loc" id="weatherLoc">—</div>
+            </div>
+          </div>
+          <div class="weather-stats" id="weatherStats"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Hasil diagnosis</h2>
+          </div>
+          <div id="diseaseResult"></div>
+        </div>
+      </div>
+
+      <div class="card prediction-card">
+        <div class="card-header">
+          <h2 class="card-title">Analisis & prediksi penyebaran</h2>
+        </div>
+        <div class="prediction-grid" id="predictionGrid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Jadwal tindakan 7 hari</h2>
+        </div>
+        <div class="action-timeline" id="actionTimeline"></div>
+      </div>
+
+      <button type="button" class="btn-secondary full-width" id="resetBtn">
+        Analisis lahan baru
+      </button>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>CropRisk · Data cuaca OpenWeatherMap · Analisis visual Gemini</p>
+</footer>
+
+<script>window.CROPRISK_API_CONFIGURED = {{ 'true' if api_keys_configured else 'false' }};</script>
+<script src="/static/js/main.js"></script>
+</body>
+</html>
